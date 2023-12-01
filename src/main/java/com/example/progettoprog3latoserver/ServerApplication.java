@@ -13,6 +13,8 @@ public class ServerApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(ServerApplication.class.getResource("ServerView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setScene(scene);
+        ServerController contr = fxmlLoader.getController();
+        contr.initModel();
         stage.show();
     }
 
