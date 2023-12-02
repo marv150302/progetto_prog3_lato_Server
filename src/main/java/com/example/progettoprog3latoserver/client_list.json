@@ -1,0 +1,23 @@
+[
+  {
+    "name": "marco",
+    "cognome": "rossi",
+    "email": "1@1.com",
+    "id": "1"
+
+  },
+  {
+    "name": "Tommaso",
+    "cognome": "verdi",
+    "email": "2@2.com",
+    "id": "2"
+
+  },
+  {
+    "name": "Anna",
+    "cognome": "neri",
+    "email": "3@3.com",
+    "id": "3"
+
+  }
+]
