@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-public class ServerModel {
+public class ServerModel extends Thread{
 
     private ServerSocket server   = null;
     private DataInputStream in  =  null;
@@ -14,13 +14,13 @@ public class ServerModel {
     private SimpleStringProperty serverSwitch = null;
     public int PORT;
 
-    public void start(){
+    public void run(){
 
         //System.out.println("Thread is running");
         //ExecutorService service = Executors.newFixedThreadPool(10);
         try{
 
-            server = new ServerSocket(this.PORT);
+            server = new ServerSocket(PORT);
             //System.out.println("Server started");
             //System.out.println("Waiting for a client ...");
             while(!server.isClosed()){
@@ -41,7 +41,7 @@ public class ServerModel {
             }
 
 
-        } catch (Exception e) {this.closeServerSocket();}
+        } catch (Exception e) {closeServerSocket();}
     }
 
     public void closeServerSocket(){

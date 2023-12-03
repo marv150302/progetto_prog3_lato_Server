@@ -83,7 +83,7 @@ class ClientHandler implements Runnable{
 
                 messageFromClient = bufferedReader.readLine();
 
-                if (messageFromClient.contains("login")){
+                if (messageFromClient!=null && messageFromClient.contains("login")){
 
                     System.out.println("message: " + messageFromClient);
                 }
