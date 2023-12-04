@@ -21,6 +21,7 @@ public class ServerController {
 
     public void onSwitchServerOnButtonClick(){
 
+        server.setDaemon(true);
         server.start();
     }
 
