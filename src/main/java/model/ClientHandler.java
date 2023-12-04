@@ -1,13 +1,9 @@
 package model;
 
-import com.example.progettoprog3latoserver.Email;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 class ClientHandler implements Runnable{
@@ -74,6 +70,9 @@ class ClientHandler implements Runnable{
     }
     public void run(){
 
+
+
+
         String messageFromClient;
 
         while (socket.isConnected()){
@@ -86,6 +85,38 @@ class ClientHandler implements Runnable{
                 if (messageFromClient!=null && messageFromClient.contains("login")){
 
                     System.out.println("message: " + messageFromClient);
+                    this.username = messageFromClient.substring(5);
+                    String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
+                    File f = new File(filePathString);
+                    File user_file = new File(filePathString);
+                    if (user_file.createNewFile()){
+
+                        System.out.println("file created");
+                    }else{
+
+                        /*
+                        * The user already existed so we send him back his inbox
+                        * */
+                        String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
+                        this.sendMessage(usr_inbox);
+
+                        System.out.println("file has already been created");
+
+                    }
+                    /*
+                    * 1 - We will check if the user is present in our database(for now it's just a JSON file)
+                    * 2 - If he is then we will simply send back his inbox
+                    * 3 - Otherwise we will add him to our database
+                    * */
+                }else{
+
+                    //we will implement all the method from the user requests
+                    switch (messageFromClient){
+
+
+
+
+                    }
                 }
 
             }catch (IOException e){
@@ -133,27 +164,10 @@ class ClientHandler implements Runnable{
         }*/
     }
 
-    private boolean getUserEmails(String userID) throws IOException, ParseException {
 
-        String src = "/Users/marvel/Programming/Uni/ProgettoProg3/src/main/java/com/example/progettoprog3/MOCK_DATA.json";
-        ArrayList<Email> emails = new ArrayList<>();
-        JSONParser jsonParser = new JSONParser();
 
-        for (Object o : (JSONArray) jsonParser.parse(new FileReader(src))) {
 
-            JSONObject rootObj = (JSONObject) o;
-            //
 
-            String ID = (String) rootObj.get("ID");
-            String sender = (String) rootObj.get("sender");
-            String receiver = (String) rootObj.get("receiver");
-            String text = (String) rootObj.get("text");
-            String object = (String) rootObj.get("object");
-            String date = (String) rootObj.get("date");
-            //
-            emails.add(new Email(ID, sender,receiver,text, object, date));
-        }
-        return true;
-    }
+
 
 }
