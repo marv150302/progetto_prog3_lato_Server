@@ -23,6 +23,7 @@ public class ServerController {
 
         server.setDaemon(true);
         server.start();
+        serverSwitch.setDisable(true);
     }
 
 }

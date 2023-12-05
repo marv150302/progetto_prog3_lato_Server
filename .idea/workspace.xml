@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f67a22e-a8e7-48a4-b276-df8d0ea14bc9" name="Changes" comment="added daemon = true for threads">
+    <list default="true" id="6f67a22e-a8e7-48a4-b276-df8d0ea14bc9" name="Changes" comment="optimized json - msg sending">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/email_JSON/1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/email_JSON/2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/email_JSON/3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/ServerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ServerModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +85,8 @@
       <updated>1701368533507</updated>
       <workItem from="1701368534834" duration="16103000" />
       <workItem from="1701511788592" duration="10126000" />
-      <workItem from="1701608117186" duration="18855000" />
+      <workItem from="1701608117186" duration="23954000" />
+      <workItem from="1701776917963" duration="5794000" />
     </task>
     <task id="LOCAL-00001" summary="Creazione progetto lato server">
       <option name="closed" value="true" />
@@ -152,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701728456488</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="optimized json - msg sending">
+      <option name="closed" value="true" />
+      <created>1701769852409</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701769852409</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,6 +184,7 @@
     <MESSAGE value="Aggiornata implementazione socket" />
     <MESSAGE value="- Made the server to wait for connections in a Thread" />
     <MESSAGE value="added daemon = true for threads" />
-    <option name="LAST_COMMIT_MESSAGE" value="added daemon = true for threads" />
+    <MESSAGE value="optimized json - msg sending" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimized json - msg sending" />
   </component>
 </project>

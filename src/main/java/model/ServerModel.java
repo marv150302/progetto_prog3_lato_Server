@@ -1,17 +1,13 @@
 package model;
 
 import javafx.beans.property.SimpleStringProperty;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.DataInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServerModel extends Thread{
 
@@ -21,18 +17,17 @@ public class ServerModel extends Thread{
     private SimpleStringProperty serverSwitch = null;
     public int PORT;
 
+    public final ServerModel model;
+
     public ServerModel(int port){
 
         this.log = new SimpleStringProperty();
         this.serverSwitch = new SimpleStringProperty();
         this.PORT = port;
-        /*try{
-            this.getClients();
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
+        this.model = this;
 
     }
+
 
     public void run(){
 
@@ -43,22 +38,17 @@ public class ServerModel extends Thread{
         try{
 
             server = new ServerSocket(PORT);
-            //System.out.println("Server started");
+            this.writeLog("Server Started");
+            this.writeLog("Waiting for a client ...");
             //System.out.println("Waiting for a client ...");
             while(!server.isClosed()){
 
 
                 Socket socket = server.accept();
-                // obtaining input and out streams
-                //DataInputStream dis = new DataInputStream(socket.getInputStream());
-                //DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                //System.out.println("Assigning new thread for this client");
-                System.out.println("A new client has connected");
-                Thread thread = new Thread( new ClientHandler(socket));
+                Thread thread = new Thread( new ClientHandler(socket, model));
                 thread.start();
                 //Runnable client = new ClientHandler(socket, dis, dos);
                 //service.execute(client);
-
 
             }
 
@@ -66,28 +56,18 @@ public class ServerModel extends Thread{
         } catch (Exception e) {closeServerSocket();}
     }
 
-    private void getClients() throws IOException, ParseException {
 
+    public void writeLog(String message){
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        if (this.getLog().getValue()==null) {
 
-        String src = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/client_list.json";
-        ArrayList<Client> clients = new ArrayList<>();
-        JSONParser jsonParser = new JSONParser();
-        for (Object o : (JSONArray) jsonParser.parse(new FileReader(src))) {
-
-            JSONObject rootObj = (JSONObject) o;
-            //
-
-            String name = (String) rootObj.get("name");
-            String surname = (String) rootObj.get("surname");
-            String email = (String) rootObj.get("email");
-            String ID = (String) rootObj.get("ID");
-            //
-            clients.add(new Client(name, surname, email, ID));
+            this.getLog().set(dtf.format(now) + ":  " + message);
+            return;
         }
-
+        this.getLog().set(this.getLog().getValue()+"\n"+ dtf.format(now) + ":  " + message);
     }
-
     public void closeServerSocket(){
 
         try {
@@ -105,20 +85,4 @@ public class ServerModel extends Thread{
         return this.log;
     }
 
-    private class Client{
-
-        String name;
-        String surname;
-        String email;
-        String ID;
-        public Client(String name, String surname, String email, String ID){
-
-            this.name = name;
-            this.surname = surname;
-            this.email = email;
-            this.ID = ID;
-        }
-
-
-    }
 }

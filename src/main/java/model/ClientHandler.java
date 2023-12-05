@@ -19,11 +19,14 @@ class ClientHandler implements Runnable{
     private BufferedWriter bufferedWriter;
     private String username;
     private DataOutputStream dos;
-    public ClientHandler(Socket socket){
+
+    public ServerModel model;
+    public ClientHandler(Socket socket, ServerModel model){
 
         try{
 
             this.socket = socket;
+            this.model = model;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = bufferedReader.readLine();
@@ -37,13 +40,6 @@ class ClientHandler implements Runnable{
 
     public void sendMessage(String message){
 
-            /*for (ClientHandler clientHandler: clientHandlers){
-
-                try{
-
-
-                }
-            }*/
         try{
             this.bufferedWriter.write(message);
             this.bufferedWriter.newLine();
@@ -75,63 +71,95 @@ class ClientHandler implements Runnable{
     boolean once = false;
     public void run(){
 
-
-
-
         String messageFromClient;
-
         while (socket.isConnected()){
 
-
-            //System.out.println("Thread is running");
             try{
+
                 messageFromClient = bufferedReader.readLine();
-
-
 
                 if (true){
 
                     JSONParser parser = new JSONParser();
                     JSONObject json = (JSONObject) parser.parse(messageFromClient);
-                    //System.out.println((String) json.get("action"));
                     switch ((String) json.get("action")){
 
                         case "login":{
 
-                            this.username = (String) json.get("msg");
+
+
+                            this.username = (String) json.get("user");
+                            model.writeLog(this.username + " has conncted");
+                            if (this.username==null) break;
                             String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
                             File user_file = new File(filePathString);
-                            if (user_file.createNewFile()){
-
-                                System.out.println("file created");
-                            }else{
+                            if (!user_file.createNewFile()){
 
                                 /*
-                                 * The user already existed so we send him back his inbox
+                                 * The user already existed, so we send him back his inbox
+                                 * otherwise we create a new empty json file
                                  * */
                                 String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
                                 JSONObject json_to_send = new JSONObject();
                                 json_to_send.put("action", "inbox");
                                 json_to_send.put("emails", usr_inbox);
                                 this.sendMessage(json_to_send.toString());
-
-                                System.out.println("file has already been created");
-
                             }
+                            break;
+                        }
+
+                        case "send email":{
+
+                            String message = (String) json.get("text");
+                            String object = (String) json.get("object");
+                            String receiver =(String) json.get("receiver");
+                            String[] receivers = receiver.split("\\s+");
+                            String failed_clients = "";
+                            for (String client : receivers) {
+
+                                ClientHandler client_to_search = searchClient(client);
+
+                                if (client_to_search!=null){
+                                    /*
+                                    * if we have found the client
+                                    * we proceed to send the email
+                                    * */
+                                    JSONObject json_to_send = new JSONObject();
+                                    json_to_send.put("action","receiving email");
+                                    json_to_send.put("text", message);
+                                    json_to_send.put("object", object);
+                                    json_to_send.put("receiver", receiver);
+                                    json_to_send.put("sender", this.username);
+                                    client_to_search.sendMessage(json_to_send.toString());
+                                    model.writeLog(this.username + " has sent an email to: " + receiver);
+                                    model.writeLog(receiver + " has received an email from: " + this.username);
+                                    json_to_send = new JSONObject();
+                                    json_to_send.put("action", "confirmed delivery");
+                                    this.sendMessage(json_to_send.toString());
+                                }else {
+
+                                    /*
+                                    * we save the wrong emails and report them to the log and the user
+                                    * */
+                                    failed_clients += client + " - ";
+                                }
+                            }
+                            if (!failed_clients.isEmpty()){
+
+                                /*
+                                *
+                                * we notify both the server log and the user
+                                * */
+                                model.writeLog(this.username + " failed to send email to: " + failed_clients);
+                                JSONObject json_to_send = new JSONObject();
+                                json_to_send.put("action", "error in delivery");
+                                json_to_send.put("failed-emails", failed_clients);
+                            }
+
+
+                            break;
                         }
                     }
-
-                    System.out.println("message: " + messageFromClient);
-                    //this.username = messageFromClient.substring(5);
-
-                   // File f = new File(filePathString);
-
-
-                    /*
-                    * 1 - We will check if the user is present in our database(for now it's just a JSON file)
-                    * 2 - If he is then we will simply send back his inbox
-                    * 3 - Otherwise we will add him to our database
-                    * */
                 }
 
             }catch (IOException e){
@@ -143,42 +171,18 @@ class ClientHandler implements Runnable{
             }
         }
 
+    }
 
+    private ClientHandler searchClient(String user_email){
 
-        /*String received;
-        String toreturn;
-        while(!Thread.currentThread().isInterrupted()){
+        for (ClientHandler client : clientHandlers){
 
-            try{
+            if (client.username.equals(user_email)){
 
-                // Ask user what he wants
-
-
-                System.out.println("inside");
-                // receive the answer from client
-                received = dis.readUTF();
-                System.out.println("received user:" + received);
-                if (received.toLowerCase().contains("login")){
-
-
-                    String usr_ID = received.substring(new String("login").length());
-                    System.out.println("ID: " + usr_ID);
-                    String user_file = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/" + usr_ID + ".json";
-                    String file = new String(Files.readAllBytes(Paths.get(user_file)));
-                    System.out.println("file_data"+ file);
-                    dos.writeUTF(file);
-
-                }
-                if (received.equalsIgnoreCase("exit")){
-
-                    System.out.println("Client " + this.socket + " sends exit...");
-                    System.out.println("Closing this connection.");
-                    this.socket.close();
-                    System.out.println("Connection closed");
-                    break;
-                }
-            }catch (Exception e){Thread.currentThread().interrupt();}
-        }*/
+                return client;
+            }
+        }
+        return null;
     }
 
 
