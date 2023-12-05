@@ -1,5 +1,9 @@
 package model;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -68,6 +72,7 @@ class ClientHandler implements Runnable{
             }
         }catch (IOException e){e.printStackTrace();}
     }
+    boolean once = false;
     public void run(){
 
 
@@ -77,52 +82,64 @@ class ClientHandler implements Runnable{
 
         while (socket.isConnected()){
 
+
             //System.out.println("Thread is running");
             try{
-
                 messageFromClient = bufferedReader.readLine();
 
-                if (messageFromClient!=null && messageFromClient.contains("login")){
+
+
+                if (true){
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject json = (JSONObject) parser.parse(messageFromClient);
+                    //System.out.println((String) json.get("action"));
+                    switch ((String) json.get("action")){
+
+                        case "login":{
+
+                            this.username = (String) json.get("msg");
+                            String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
+                            File user_file = new File(filePathString);
+                            if (user_file.createNewFile()){
+
+                                System.out.println("file created");
+                            }else{
+
+                                /*
+                                 * The user already existed so we send him back his inbox
+                                 * */
+                                String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
+                                JSONObject json_to_send = new JSONObject();
+                                json_to_send.put("action", "inbox");
+                                json_to_send.put("emails", usr_inbox);
+                                this.sendMessage(json_to_send.toString());
+
+                                System.out.println("file has already been created");
+
+                            }
+                        }
+                    }
 
                     System.out.println("message: " + messageFromClient);
-                    this.username = messageFromClient.substring(5);
-                    String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
-                    File f = new File(filePathString);
-                    File user_file = new File(filePathString);
-                    if (user_file.createNewFile()){
+                    //this.username = messageFromClient.substring(5);
 
-                        System.out.println("file created");
-                    }else{
+                   // File f = new File(filePathString);
 
-                        /*
-                        * The user already existed so we send him back his inbox
-                        * */
-                        String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
-                        this.sendMessage(usr_inbox);
 
-                        System.out.println("file has already been created");
-
-                    }
                     /*
                     * 1 - We will check if the user is present in our database(for now it's just a JSON file)
                     * 2 - If he is then we will simply send back his inbox
                     * 3 - Otherwise we will add him to our database
                     * */
-                }else{
-
-                    //we will implement all the method from the user requests
-                    switch (messageFromClient){
-
-
-
-
-                    }
                 }
 
             }catch (IOException e){
 
                 closeEverything(socket, bufferedReader, bufferedWriter);
                 break;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
         }
 
