@@ -9,7 +9,7 @@ public class ServerController {
     @FXML
     private TextArea log;
     @FXML
-    private Button serverSwitch;
+    private Button server_switch;
 
     private final ServerModel server = new ServerModel(5056);
 
@@ -19,11 +19,12 @@ public class ServerController {
         this.log.textProperty().bindBidirectional(server.getLog());
     }
 
+    @FXML
     public void onSwitchServerOnButtonClick(){
 
         //server.setDaemon(true);
         server.run();
-        //serverSwitch.setDisable(true);
+        server_switch.setDisable(true);
     }
 
 }

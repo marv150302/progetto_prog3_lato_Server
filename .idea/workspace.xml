@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f67a22e-a8e7-48a4-b276-df8d0ea14bc9" name="Changes" comment="Server improvement">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" afterDir="false" />
-    </list>
+    <list default="true" id="6f67a22e-a8e7-48a4-b276-df8d0ea14bc9" name="Changes" comment="Server improvement" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -85,7 +82,7 @@
       <workItem from="1701511788592" duration="10126000" />
       <workItem from="1701608117186" duration="23954000" />
       <workItem from="1701776917963" duration="44423000" />
-      <workItem from="1701972456255" duration="6593000" />
+      <workItem from="1701972456255" duration="6884000" />
     </task>
     <task id="LOCAL-00001" summary="Creazione progetto lato server">
       <option name="closed" value="true" />
@@ -175,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701969198347</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Server improvement">
+      <option name="closed" value="true" />
+      <created>1701979585528</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1701979585528</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
