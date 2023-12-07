@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -33,12 +34,28 @@ class ClientHandler implements Runnable{
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             //this.username = bufferedReader.readLine();
             //this.model.writeLog(this.username);
-            clientHandlers.add(this);
+
+
+
         }catch(IOException e){
 
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
 
+    }
+
+    private void addClient(String username, ClientHandler new_client){
+
+        for (ClientHandler client : clientHandlers) {
+
+            if (client.username.equals(username)){
+
+                System.out.println("There is already another client");
+                client.socket =this.socket;
+                return;
+            }
+        }
+        clientHandlers.add(new_client);
     }
 
     public void sendMessage(String message){
@@ -72,7 +89,17 @@ class ClientHandler implements Runnable{
             }
         }catch (IOException e){e.printStackTrace();}
     }
-    boolean once = false;
+
+    private void displayUsers(){
+
+
+        for (ClientHandler clientHandler : clientHandlers) {
+
+            System.out.println("Client: " + clientHandler.username);
+        }
+        System.out.println("------------------------");
+    }
+
     public void run(){
 
         String messageFromClient;
@@ -93,6 +120,10 @@ class ClientHandler implements Runnable{
                             if (this.username==null)this.username = (String) json.get("user");
                             model.writeLog(this.username + " has conncted");
                             if (this.username==null) break;
+
+                            addClient(username, this);
+                            displayUsers();
+                            System.out.println("Client size: " + clientHandlers.size());
                             String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
                             File user_file = new File(filePathString);
                             if (!user_file.createNewFile()){
@@ -106,6 +137,9 @@ class ClientHandler implements Runnable{
                                 json_to_send.put("action", "inbox");
                                 json_to_send.put("emails", usr_inbox);
                                 this.sendMessage(json_to_send.toString());
+                            }else {
+
+                                createUserPrivateFile();
                             }
                             break;
                         }
@@ -120,16 +154,13 @@ class ClientHandler implements Runnable{
                             String failed_clients = "";
                             for (String client : receivers) {
 
-                                boolean client_to_search = searchClient(client);
-
-                                if ( client_to_search==true){
+                                if (searchClient(client)){
                                     /*
                                     * if we have found the client
                                     * we proceed to send the email
                                     * */
 
                                     JSONObject json_to_send = new JSONObject();
-                                    JSONArray email_container = new JSONArray();
                                     JSONObject email = new JSONObject();
                                     json_to_send.put("action","receiving email");
 
@@ -145,18 +176,17 @@ class ClientHandler implements Runnable{
                                     LocalDateTime now = LocalDateTime.now();
                                     email.put("date", dtf.format(now));
 
-                                    email_container.add(email);
                                     json_to_send.put("email", email);
 
-                                    //this.updateUserEmails(receiver, json_to_send);
+                                    this.updateUserEmails(receiver, email);
                                     /*
                                     * we retrieve the client socket if he is online
                                     * */
-                                    model.writeLog(sender + " has sent an email to: " + receiver);
+                                    model.writeLog(sender + " has sent an email to: " + client);
                                     ClientHandler client_socket = searchClientSocket(client);
                                     if (client_socket!=null){
 
-                                        System.out.println(json_to_send);
+                                        //System.out.println(json_to_send);
                                         client_socket.sendMessage(json_to_send.toString());
                                         model.writeLog(receiver + " has received an email from: " + sender);
                                     }
@@ -186,6 +216,7 @@ class ClientHandler implements Runnable{
                             }
                             break;
                         }
+
                     }
                 }else {
 
@@ -201,6 +232,7 @@ class ClientHandler implements Runnable{
 
             }catch (IOException e){
 
+                clientHandlers.remove(this);
                 closeEverything(socket, bufferedReader, bufferedWriter);
                 break;
             } catch (ParseException e) {
@@ -209,20 +241,82 @@ class ClientHandler implements Runnable{
         }
     }
 
-    private void updateUserEmails(String receiver, JSONObject email){
+    private void createUserPrivateFile(){
 
         try{
 
-            JSONArray root = new JSONArray();
+            String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+this.username+".json";
+            String jsonFileStr = new String(
+                    Files.readAllBytes(Paths
+                            .get(filePathString)),
+                    StandardCharsets.UTF_8);
+            JSONArray jsonArray = (JSONArray) new JSONParser().parse(jsonFileStr);
+
+            //String strPath = "PATH TO EMPLOYEE JSON";
+            File strFile = new File(filePathString);
+            //boolean fileCreated = strFile.createNewFile();
+            Writer objWriter = new BufferedWriter(new FileWriter(strFile));
+            objWriter.write(jsonArray.toString());
+            objWriter.flush();
+            objWriter.close();
+            //File user_file = new File(filePathString);
+            // String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
+
+            //JSONArray jsonarray = new JSONArray(usr_inbox); //from the file
+            // JSONParser parser = new JSONParser();
+            //JSONObject jsonObj = (JSONObject) parser.parse(usr_inbox);
+            //JSONObject jsonobject = new JSONObject(yourNewlyJsonObject);
+            //jsonarray.put(jsonobject);
+
+            // JSONArray root = new JSONArray();
             /*JSONObject obj = new JSONObject();
             obj.put("submitted","");
             obj.put("limit", 0);
             obj.put("ID", 123);
             obj.put("target", 3);*/
 
-            root.add(email);
+            //root.add(email);
+            //Files.write(Paths.get(filePathString), root.toString().getBytes(), StandardOpenOption.APPEND);
+        }catch (Exception e){}
+    }
+
+    private void updateUserEmails(String receiver, JSONObject email){
+
+        try{
+
             String filePathString = "/Users/marvel/Programming/Uni/progettoProg3LatoServer/src/main/java/com/example/progettoprog3latoserver/email_JSON/"+receiver+".json";
-            Files.write(Paths.get(filePathString), root.toString().getBytes());
+            String jsonFileStr = new String(
+                    Files.readAllBytes(Paths
+                            .get(filePathString)),
+                    StandardCharsets.UTF_8);
+            JSONArray jsonArray = (JSONArray) new JSONParser().parse(jsonFileStr);
+            jsonArray.add(email);
+
+            //String strPath = "PATH TO EMPLOYEE JSON";
+            File strFile = new File(filePathString);
+            boolean fileCreated = strFile.createNewFile();
+            Writer objWriter = new BufferedWriter(new FileWriter(strFile));
+            objWriter.write(jsonArray.toString());
+            objWriter.flush();
+            objWriter.close();
+            //File user_file = new File(filePathString);
+           // String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
+
+            //JSONArray jsonarray = new JSONArray(usr_inbox); //from the file
+           // JSONParser parser = new JSONParser();
+            //JSONObject jsonObj = (JSONObject) parser.parse(usr_inbox);
+            //JSONObject jsonobject = new JSONObject(yourNewlyJsonObject);
+            //jsonarray.put(jsonobject);
+
+           // JSONArray root = new JSONArray();
+            /*JSONObject obj = new JSONObject();
+            obj.put("submitted","");
+            obj.put("limit", 0);
+            obj.put("ID", 123);
+            obj.put("target", 3);*/
+
+            //root.add(email);
+            //Files.write(Paths.get(filePathString), root.toString().getBytes(), StandardOpenOption.APPEND);
         }catch (Exception e){}
     }
 
