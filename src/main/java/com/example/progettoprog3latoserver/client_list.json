@@ -1,23 +1,17 @@
 [
   {
-    "name": "marco",
-    "surname": "rossi",
-    "email": "1@1.com",
-    "id": "1"
-
+    "surname": "test",
+    "name": "test",
+    "email": "1@1.com"
   },
   {
-    "name": "Tommaso",
-    "surname": "verdi",
-    "email": "2@2.com",
-    "id": "2"
-
+    "surname": "test",
+    "name": "test",
+    "email": "2@2.com"
   },
   {
-    "name": "Anna",
-    "surname": "neri",
-    "email": "3@3.com",
-    "id": "3"
-
+    "surname": "test",
+    "name": "test",
+    "email": "3@3.com"
   }
 ]

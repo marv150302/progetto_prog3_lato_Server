@@ -23,7 +23,7 @@ public class ServerController {
     public void onSwitchServerOnButtonClick(){
 
         //server.setDaemon(true);
-        server.run();
+        server.start();
         server_switch.setDisable(true);
     }
 

@@ -6,7 +6,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.DataInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,14 +16,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ServerModel {
+public class ServerModel extends Thread{
 
     private ServerSocket server   = null;
-
     public static ArrayList<Client> users = new ArrayList<>();
-    private DataInputStream in  =  null;
-    private SimpleStringProperty log = null;
-    private SimpleStringProperty serverSwitch = null;
+    private static SimpleStringProperty log = null;
     public int PORT;
 
     public final ServerModel model;
@@ -32,7 +28,6 @@ public class ServerModel {
     public ServerModel(int port){
 
         this.log = new SimpleStringProperty();
-        this.serverSwitch = new SimpleStringProperty();
         this.PORT = port;
         this.model = this;
        try {
@@ -62,46 +57,36 @@ public class ServerModel {
 
     public void run(){
 
+
         ExecutorService service = Executors.newFixedThreadPool(10);
-        service.execute(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    server = new ServerSocket(PORT);
-                    writeLog("Server Started");
-                    writeLog("Waiting for a client ...");
-                    writeLog("--------------------------------------------");
-                    //System.out.println("Waiting for a client ...");
-                    while(!server.isClosed()){
+        try{
+            server = new ServerSocket(PORT);
+            writeLog("Server Started");
+            writeLog("Waiting for a client ...");
+            writeLog("--------------------------------------------");
+            while(!server.isClosed()){
 
 
-                        Socket socket = server.accept();
-                        Thread thread = new Thread( new ClientHandler(socket, model));
-                        thread.start();
-                        //Runnable client = new ClientHandler(socket, dis, dos);
-                        //service.execute(client);
-
-                    }
-
-
-                } catch (Exception e) {closeServerSocket();}
+                Socket socket = server.accept();
+                ClientHandler client = new ClientHandler(socket);
+                client.future = service.submit(client);
             }
-        });
 
 
+        } catch (Exception e) {closeServerSocket();}
     }
 
 
-    public void writeLog(String message){
+    public static void writeLog(String message){
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        if (this.getLog().getValue()==null) {
+        if (getLog().getValue()==null) {
 
-            this.getLog().set(dtf.format(now) + ":  " + message);
+            getLog().set(dtf.format(now) + ":  " + message);
             return;
         }
-        this.getLog().set(this.getLog().getValue()+"\n"+ dtf.format(now) + ":  " + message);
+        getLog().set(getLog().getValue()+"\n"+ dtf.format(now) + ":  " + message);
     }
     public void closeServerSocket(){
 
@@ -116,11 +101,11 @@ public class ServerModel {
     }
 
 
-    public SimpleStringProperty getLog(){
-        return this.log;
+    public static SimpleStringProperty getLog(){
+        return log;
     }
 
-    public class Client{
+    public static class Client{
 
         String name;
         String surname;
