@@ -1,17 +1,1 @@
-[
-  {
-    "surname": "test",
-    "name": "test",
-    "email": "1@1.com"
-  },
-  {
-    "surname": "test",
-    "name": "test",
-    "email": "2@2.com"
-  },
-  {
-    "surname": "test",
-    "name": "test",
-    "email": "3@3.com"
-  }
-]
+[{"surname":"test","name":"test","email":"marco@ross.com"}]
