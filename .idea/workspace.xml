@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6f67a22e-a8e7-48a4-b276-df8d0ea14bc9" name="Changes" comment="Finished Project">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/client_list.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/client_list.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/email_JSON/2@2.com.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/email_JSON/2@2.com.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/Email.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/progettoprog3latoserver/ServerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ServerModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +94,7 @@
       <workItem from="1701972456255" duration="24640000" />
       <workItem from="1702629253263" duration="32889000" />
       <workItem from="1702843188976" duration="1482000" />
-      <workItem from="1702995687812" duration="590000" />
+      <workItem from="1702995687812" duration="2264000" />
     </task>
     <task id="LOCAL-00001" summary="Creazione progetto lato server">
       <option name="closed" value="true" />
@@ -206,7 +208,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702888581499</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Finished Project">
+      <option name="closed" value="true" />
+      <created>1703004307167</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1703004307168</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

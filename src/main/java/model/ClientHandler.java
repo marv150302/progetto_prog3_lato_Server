@@ -158,7 +158,8 @@ class ClientHandler implements Runnable {
                              * The user already existed, so we send him back his inbox
                              * otherwise we create a new empty json file
                              * */
-                            String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
+                            JSONArray usr_inbox = (JSONArray) parser.parse(new FileReader(filePathString));
+                            //String usr_inbox = new String(Files.readAllBytes(Paths.get(filePathString)));
                             JSONObject json_to_send = new JSONObject();
                             json_to_send.put("action", "inbox");
                             json_to_send.put("emails", usr_inbox);

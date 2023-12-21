@@ -16,7 +16,7 @@ public class ServerController {
 
     public void initModel(){
 
-        this.log.textProperty().bindBidirectional(server.getLog());
+        this.log.textProperty().bindBidirectional(ServerModel.getLog());
     }
 
     @FXML

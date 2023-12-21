@@ -43,7 +43,6 @@ public class ServerModel extends Thread{
         for (Object o : a)
         {
             JSONObject person = (JSONObject) o;
-
             String name = (String) person.get("name");
             String surname = (String) person.get("surname");
             String email = (String) person.get("email");
